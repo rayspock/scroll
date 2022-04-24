@@ -286,28 +286,28 @@ function App(props) {
   ]);
 
   // keep track of a variable from the contract in the local React state:
-  const balance = useContractReader(readContracts, "YourCollectible", "balanceOf", [address]);
+  const balance = useContractReader(readContracts, "ScrollBadge", "balanceOf", [address]);
   console.log("🤗 balance:", balance);
 
   // 📟 Listen for broadcast events
-  const transferEvents = useEventListener(readContracts, "YourCollectible", "Transfer", localProvider, 1);
+  const transferEvents = useEventListener(readContracts, "ScrollBadge", "Transfer", localProvider, 1);
   console.log("📟 Transfer events:", transferEvents);
 
   //
-  // 🧠 This effect will update yourCollectibles by polling when your balance changes
+  // 🧠 This effect will update scrollBadges by polling when your balance changes
   //
   const yourBalance = balance && balance.toNumber && balance.toNumber();
-  const [yourCollectibles, setYourCollectibles] = useState();
+  const [scrollBadges, setScrollBadges] = useState();
 
   useEffect(() => {
-    const updateYourCollectibles = async () => {
+    const updateScrollBadges = async () => {
       const collectibleUpdate = [];
       for (let tokenIndex = 0; tokenIndex < balance; tokenIndex++) {
         try {
           console.log("GEtting token index", tokenIndex);
-          const tokenId = await readContracts.YourCollectible.tokenOfOwnerByIndex(address, tokenIndex);
+          const tokenId = await readContracts.ScrollBadge.tokenOfOwnerByIndex(address, tokenIndex);
           console.log("tokenId", tokenId);
-          const tokenURI = await readContracts.YourCollectible.tokenURI(tokenId);
+          const tokenURI = await readContracts.ScrollBadge.tokenURI(tokenId);
           console.log("tokenURI", tokenURI);
 
           const ipfsHash = tokenURI.replace("https://ipfs.io/ipfs/", "");
@@ -326,9 +326,9 @@ function App(props) {
           console.log(e);
         }
       }
-      setYourCollectibles(collectibleUpdate);
+      setScrollBadges(collectibleUpdate);
     };
-    updateYourCollectibles();
+    updateScrollBadges();
   }, [address, yourBalance]);
 
   /*
@@ -547,7 +547,7 @@ function App(props) {
               }}
               to="/"
             >
-              YourCollectibles
+              ScrollBadges
             </Link>
           </Menu.Item>
           <Menu.Item key="/transfers">
@@ -602,7 +602,7 @@ function App(props) {
             <div style={{ width: 640, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
               <List
                 bordered
-                dataSource={yourCollectibles}
+                dataSource={scrollBadges}
                 renderItem={item => {
                   const id = item.id.toNumber();
                   return (
@@ -641,7 +641,7 @@ function App(props) {
                         <Button
                           onClick={() => {
                             console.log("writeContracts", writeContracts);
-                            tx(writeContracts.YourCollectible.transferFrom(address, transferToAddresses[id], id));
+                            tx(writeContracts.ScrollBadge.transferFrom(address, transferToAddresses[id], id));
                           }}
                         >
                           Transfer
@@ -748,7 +748,7 @@ function App(props) {
           </Route>
           <Route path="/debugcontracts">
             <Contract
-              name="YourCollectible"
+              name="ScrollBadge"
               signer={userSigner}
               provider={localProvider}
               address={address}
