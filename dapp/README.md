@@ -30,3 +30,8 @@ yarn chain
 yarn deploy
 
 ```
+
+> mint badges for test
+```bash
+yarn mint
+```
